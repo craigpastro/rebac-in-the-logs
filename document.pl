@@ -14,7 +14,6 @@ userTuple(group, x, member, anna).
 userTuple(document, b, writer, susan).
 usersetTuple(document, a, crossing, group, x, empty). % empty is special
 
-
 % Assertions
 :- userTuple(document, b, reader, susan).
 :- usersetTuple(document, a, writer, group, x, member).

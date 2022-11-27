@@ -1,24 +1,39 @@
-:- discontiguous userTuple/4.
-:- discontiguous usersetTuple/6.
+:- module(zanzibar, [check/4, schema/3, tuple/4]).
+
+:- dynamic schema/3.
+:- dynamic tuple/4.
 
 /*
-Write models using the following notation, one relation per line.
+Write schemas using the following notation, one rewrite per line.
 
-model(namespace, relation, self)
-model(namespace, relation, computedUserset(writer))
-model(namespace, relation, tupleToUserset(tupleset, computedUserset))
+schema(namespace, relation, computedUserset(writer))
+schema(namespace, relation, tupleToUserset(tupleset, computedUserset))
+schema(namespace, relation, union(rewrite1, rewrite2))
+schema(namespace, relation, intersection(rewrite1, rewrite2))
+schema(namespace, relation, exclusion(rewrite1, rewrite2))
+
+Write tuples using the following notation
+
+tuple(namespace, id, relation, user(alice)).
+tuple(namespace, id, relation, object(namespace, id)).
+tuple(namespace, id, relation, userset(namespace, id, relation)).
 */
 
-% REWRITES
-userTuple(N, A, R, U) :- usersetTuple(N, A, R, M, B, S), userTuple(M, B, S, U).
+% checkWR = check with rewrite
+checkWR(Namespace, Id, Rel, User, self) :- tuple(Namespace, Id, Rel, User).
+checkWR(Namespace, Id, _, User, computedUserset(Rel0)) :- tuple(Namespace, Id, Rel0, User).
 
-% model(document, reader, computedUserset(writer)), tuple(document, a, writer, U) --> tuple(document, a, reader, U)
-userTuple(N, A, S, U) :- model(N, S, computedUserset(R)), userTuple(N, A, R, U).
-usersetTuple(N, A, S, M, B, S) :- model(N, S, computedUserset(R)), usersetTuple(N, A, R, M, B, S).
+% checkWR(Namespace, Id, Rel, tupleToUserset(S, T), Id, User) :- tuple(Namespace, Id, R, U)...... not done yet
 
-% model(document, writer, tupleToUserset(crossing, member)), usersetTuple(document, a, crossing, group, x, member) --> usersetTuple(document, a, writer, userset(group, x, member))
-usersetTuple(N, A, T, M, B, S) :- model(N, T, tupleToUserset(R, S)), model(M, S, _), usersetTuple(N, A, R, M, B, S).
+checkWR(Namespace, Id, Rel, User, union(S, _)) :- checkWR(Namespace, Id, Rel, User, S).
+checkWR(Namespace, Id, Rel, User, union(_, T)) :- checkWR(Namespace, Id, Rel, User, T).
+checkWR(Namespace, Id, Rel, User, intersection(S, T)) :-
+    checkWR(Namespace, Id, Rel, User, S),
+    checkWR(Namespace, Id, Rel, User, T).
+checkWR(Namespace, Id, Rel, User, exclusion(S, T)) :-
+    checkWR(Namespace, Id, Rel, User, S),
+    \+ checkWR(Namespace, Id, Rel, User, T). % add , !. here?
 
-% Tuple-to-userset rewrite when the userset has no relation.
-% The last part ensures that the namespace M has a relation S on it
-usersetTuple(N, A, T, M, B, S) :- model(N, T, tupleToUserset(R, S)), model(M, S, _), usersetTuple(N, A, R, M, B, empty).
+check(Namespace, Id, Rel, User) :-
+    schema(Namespace, Rel, Rewrite),
+    checkWR(Namespace, Id, Rel, User, Rewrite).

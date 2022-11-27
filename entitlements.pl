@@ -31,6 +31,6 @@ usersetTuple(plan, team, subscriber, organization, brayer, empty).
 :- userTuple(feature, issues, access, charles).
 :- userTuple(feature, draft_prs, access, charles).
 :- userTuple(feature, sso, access, charles).
-:- not(userTuple(feature, draft_prs, access, anne)).
-:- not(userTuple(feature, sso, access, anne)).
-:- not(userTuple(feature, sso, access, beth)).
+:- \+ userTuple(feature, draft_prs, access, anne).
+:- \+ userTuple(feature, sso, access, anne).
+:- \+ userTuple(feature, sso, access, beth).
