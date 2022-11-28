@@ -1,5 +1,3 @@
-:- module(zanzibar, [check/4, schema/3, tuple/4]).
-
 :- dynamic schema/3.
 :- dynamic tuple/4.
 
