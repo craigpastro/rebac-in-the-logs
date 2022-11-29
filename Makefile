@@ -1,3 +1,3 @@
 .PHONY: test
 test:
-	swipl -g run_tests -t halt zanzibar.plt
+	swipl -t halt tests.pl
