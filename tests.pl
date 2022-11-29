@@ -334,3 +334,94 @@ tuple(document, 3, editor, charlie).
 :- \+ check(document, 3, viewer, charlie).
 :- retractall(schema(_, _, _)).
 :- retractall(tuple(_, _, _, _)).
+
+% Exclusion and tuple-to-userset in minuend
+schema(folder, viewer, self).
+schema(document, parent, self).
+schema(document, writer, self).
+schema(document, viewer, exclusion(tupleToUserset(parent, viewer), computedUserset(writer))).
+tuple(document, 1, parent, object(folder, x)).
+tuple(folder, x, viewer, abigail).
+tuple(document, 1, writer, abigail).
+tuple(folder, x, viewer, beatrix).
+tuple(document, 2, writer, charlie).
+:- \+ check(document, 1, viewer, abigail).
+:- check(document, 1, viewer, beatrix).
+:- \+ check(document, 2, viewer, charlie).
+:- retractall(schema(_, _, _)).
+:- retractall(tuple(_, _, _, _)).
+
+% Exclusion and tuple-to-userset in subtrahend
+schema(folder, viewer, self).
+schema(document, parent, self).
+schema(document, writer, self).
+schema(document, viewer, exclusion(computedUserset(writer), tupleToUserset(parent, viewer))).
+tuple(document, 1, parent, object(folder, x)).
+tuple(folder, x, viewer, abigail).
+tuple(document, 1, writer, abigail).
+tuple(folder, x, viewer, beatrix).
+tuple(document, 2, writer, charlie).
+:- \+ check(document, 1, viewer, abigail).
+:- \+ check(document, 1, viewer, beatrix).
+:- check(document, 2, viewer, charlie).
+:- retractall(schema(_, _, _)).
+:- retractall(tuple(_, _, _, _)).
+
+% Exclusion and union in minuend
+schema(document, writer, self).
+schema(document, editor, self).
+schema(document, owner, self).
+schema(document, viewer, exclusion(union(computedUserset(writer), computedUserset(editor)), computedUserset(owner))).
+tuple(document, 1, writer, abigail).
+tuple(document, 1, editor, abigail).
+tuple(document, 1, owner, abigail).
+tuple(document, 2, writer, beatrix).
+tuple(document, 2, owner, beatrix).
+tuple(document, 3, editor, charlie).
+tuple(document, 3, owner, charlie).
+tuple(document, 4, writer, daphne).
+tuple(document, 5, editor, elise).
+:- \+ check(document, 1, viewer, abigail).
+:- \+ check(document, 2, viewer, beatrix).
+:- \+ check(document, 3, viewer, charlie).
+:- check(document, 4, viewer, daphne).
+:- check(document, 5, viewer, elise).
+:- retractall(schema(_, _, _)).
+:- retractall(tuple(_, _, _, _)).
+
+% Exclusion and union in subtrahend
+schema(document, writer, self).
+schema(document, editor, self).
+schema(document, owner, self).
+schema(document, viewer, exclusion(computedUserset(writer), union(computedUserset(editor), computedUserset(owner)))).
+tuple(document, 1, writer, abigail).
+tuple(document, 1, editor, abigail).
+tuple(document, 2, writer, beatrix).
+tuple(document, 2, owner, beatrix).
+tuple(document, 3, writer, charlie).
+:- \+ check(document, 1, viewer, abigail).
+:- \+ check(document, 2, viewer, beatrix).
+:- check(document, 3, viewer, charlie).
+:- retractall(schema(_, _, _)).
+:- retractall(tuple(_, _, _, _)).
+
+% Exclusion and intersection in minuend
+schema(document, writer, self).
+schema(document, editor, self).
+schema(document, owner, self).
+schema(document, viewer, exclusion(intersection(computedUserset(writer), computedUserset(editor)), computedUserset(owner))).
+tuple(document, 1, writer, abigail).
+tuple(document, 1, editor, abigail).
+tuple(document, 1, owner, abigail).
+tuple(document, 2, writer, beatrix).
+tuple(document, 2, editor, beatrix).
+tuple(document, 3, writer, charlie).
+tuple(document, 4, editor, daphne).
+tuple(document, 5, owner, elise).
+:- \+ check(document, 1, viewer, abigail).
+:- check(document, 2, viewer, beatrix).
+:- \+ check(document, 3, viewer, charlie).
+:- \+ check(document, 4, viewer, daphne).
+:- \+ check(document, 5, viewer, elise).
+:- retractall(schema(_, _, _)).
+:- retractall(tuple(_, _, _, _)).
