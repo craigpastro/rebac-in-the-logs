@@ -9,7 +9,7 @@ cleanup :-
 % This
 schema(document, viewer, self).
 tuple(document, 1, viewer, abigail).
-:- \+ check(document, 1, viewer, abigail).
+:- check(document, 1, viewer, abigail).
 :- cleanup.
 
 % Computed Userset
