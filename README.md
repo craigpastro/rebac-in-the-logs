@@ -62,7 +62,7 @@ Once you have written your model and tuples into a file and loaded it into Prolo
 ```prolog
 ?- check(document, secret, viewer, abigail).
 ```
-If Prolog returns `true` then `abigail` is a `viewer` of `document:secret`, and `false` if not.
+Prolog returns `true` if `abigail` is a `viewer` of `document:secret`, and `false` if not.
 
 ## List
 
@@ -77,6 +77,8 @@ Similarly, suppose you are interested in the users which can view `document:secr
 ?- list(document, secret, viewer, X).
 ```
 
+All other combinations are possible. Simply insert variables into the positions of interest and run the query.
+
 ## Tests
 
 Run `make test` to run the tests. The tests provide examples of how to write schemas and tuples.
@@ -85,4 +87,4 @@ Run `make test` to run the tests. The tests provide examples of how to write sch
 
 My first thought was to somehow wrap it as a web app using something like https://github.com/ichiban/prolog. Another thought was to learn Datalog (or whatever https://github.com/google/mangle is), and see if I could implement this in Datalog.
 
-In any case, I could use your help! As you can probably tell, I am not an expert of Prolog. Please reach out here or at [twitter](https://twitter.com/craigpastro), and let me know if you can help!
+**In any case, I could use your help!** As you can probably tell, I am not an expert of Prolog. Please reach out here or at [twitter](https://twitter.com/craigpastro), and let me know if you can help!
