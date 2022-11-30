@@ -37,7 +37,7 @@ The general form of the `schema` functor is
 ```prolog
 schema(Namespace, Relation, Rewrite).
 ```
-where `Namespace` and `Relation` are names, and `Rewrite` can be either of:
+where `Namespace` and `Relation` are names, and `Rewrite` can be:
 - `self`.
 - `computedUserset(r)`, where `r` is a name.
 - `tupleToUserset(r, s)`, where `r` and `s` are names, called the _tupleset_ and _computed userset_ of the rewrite respectively.
@@ -51,7 +51,7 @@ Tuples in this system are written as follows
 ```prolog
 tuple(Namespace, Id, Relation, User).
 ```
-where `Namespace`, `Id`, `Relation` are names, and `User` can be either of:
+where `Namespace`, `Id`, `Relation` are names, and `User` can be:
 - a name representing a concrete user.
 - `object(Namespace, Id)`, where `Namespace` and `Id` are names.
 - `userset(Namespace, Id, Relation)`, where `Namespace`, `Id`, and `Relation` are names.
