@@ -2,21 +2,22 @@
 :- discontiguous check/4.
 :- discontiguous tuple/4.
 
+cleanup :-
+    retractall(schema(_, _, _)),
+    retractall(tuple(_, _, _, _)).
+
 % This
 schema(document, viewer, self).
 tuple(document, 1, viewer, abigail).
 :- check(document, 1, viewer, abigail).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
-
+:- cleanup.
 
 % Computed Userset
 schema(document, writer, self).
 schema(document, viewer, computedUserset(writer)).
 tuple(document, 1, writer, abigail).
 :- check(document, 1, viewer, abigail).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Tuple-to-userset
 schema(folder, viewer, self).
@@ -25,9 +26,7 @@ schema(document, viewer, tupleToUserset(parent, viewer)).
 tuple(document, 1, parent, object(folder, x)).
 tuple(folder, x, viewer, abigail).
 :- check(document, 1, viewer, abigail).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
-
+:- cleanup.
 
 % This and union
 schema(document, writer, self).
@@ -36,8 +35,7 @@ tuple(document, 1, viewer, abigail).
 tuple(document, 2, writer, beatrix).
 :- check(document, 1, viewer, abigail).
 :- check(document, 2, viewer, beatrix).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % This and intersection
 schema(document, writer, self).
@@ -49,8 +47,7 @@ tuple(document, 3, writer, charlie).
 :- check(document, 1, viewer, abigail).
 :- \+ check(document, 2, viewer, beatrix).
 :- \+ check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % This and exclusion base
 schema(document, writer, self).
@@ -62,8 +59,7 @@ tuple(document, 3, writer, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- check(document, 2, viewer, beatrix).
 :- \+ check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Computed userset and union
 schema(document, writer, self).
@@ -73,8 +69,7 @@ tuple(document, 1, writer, abigail).
 tuple(document, 2, editor, beatrix).
 :- check(document, 1, viewer, abigail).
 :- check(document, 2, viewer, beatrix).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Computed userset and intersection
 schema(document, writer, self).
@@ -87,8 +82,7 @@ tuple(document, 3, editor, charlie).
 :- check(document, 1, viewer, abigail).
 :- \+ check(document, 2, viewer, beatrix).
 :- \+ check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Computed userset and exclusion
 schema(document, writer, self).
@@ -101,8 +95,7 @@ tuple(document, 3, editor, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- check(document, 2, viewer, beatrix).
 :- \+ check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Tuple-to-userset and computed userset
 schema(folder, writer, self).
@@ -112,8 +105,7 @@ schema(document, viewer, tupleToUserset(parent, viewer)).
 tuple(document, 1, parent, object(folder, x)).
 tuple(folder, x, writer, abigail).
 :- check(document, 1, viewer, abigail).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Tuple-to-userset and tuple-to-userset
 schema(group, member, self).
@@ -125,8 +117,7 @@ tuple(document, 1, parent, object(folder, x)).
 tuple(folder, x, parent, object(group, g)).
 tuple(group, g, member, abigail).
 :- check(document, 1, viewer, abigail).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Tuple-to-userset and union
 schema(folder, writer, self).
@@ -139,8 +130,7 @@ tuple(folder, x, writer, abigail).
 tuple(folder, x, editor, beatrix).
 :- check(document, 1, viewer, abigail).
 :- check(document, 1, viewer, beatrix).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Tuple-to-userset and intersection
 schema(folder, writer, self).
@@ -156,8 +146,7 @@ tuple(folder, x, editor, charlie).
 :- check(document, 1, viewer, abigail).
 :- \+ check(document, 1, viewer, beatrix).
 :- \+ check(document, 1, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Tuple-to-userset and exclusion
 schema(folder, writer, self).
@@ -173,8 +162,7 @@ tuple(folder, x, editor, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- check(document, 1, viewer, beatrix).
 :- \+ check(document, 1, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Union and tuple-to-userset
 schema(folder, viewer, self).
@@ -186,8 +174,7 @@ tuple(folder, x, viewer, abigail).
 tuple(document, 1, writer, beatrix).
 :- check(document, 1, viewer, abigail).
 :- check(document, 1, viewer, beatrix).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Union and union
 schema(document, writer, self).
@@ -200,8 +187,7 @@ tuple(document, 3, owner, charlie).
 :- check(document, 1, viewer, abigail).
 :- check(document, 2, viewer, beatrix).
 :- check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Union and intersection
 schema(document, writer, self).
@@ -217,8 +203,7 @@ tuple(document, 4, owner, daphne).
 :- check(document, 2, viewer, beatrix).
 :- \+ check(document, 3, viewer, charlie).
 :- \+ check(document, 4, viewer, daphne).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Union and exclusion
 schema(document, writer, self).
@@ -234,8 +219,7 @@ tuple(document, 4, owner, daphne).
 :- \+ check(document, 2, viewer, beatrix).
 :- check(document, 3, viewer, charlie).
 :- \+ check(document, 4, viewer, daphne).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Intersection and tuple-to-userset
 schema(folder, viewer, self).
@@ -250,8 +234,7 @@ tuple(document, 2, writer, charlie).
 :- check(document, 1, viewer, abigail).
 :- \+ check(document, 1, viewer, beatrix).
 :- \+ check(document, 2, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Intersection and union
 schema(document, writer, self).
@@ -270,8 +253,7 @@ tuple(document, 5, owner, elise).
 :- \+ check(document, 3, viewer, charlie).
 :- \+ check(document, 4, viewer, daphne).
 :- \+ check(document, 5, viewer, elise).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Intersection and intersection
 schema(document, writer, self).
@@ -294,8 +276,7 @@ tuple(document, 6, owner, fernanda).
 :- \+ check(document, 4, viewer, daphne).
 :- \+ check(document, 5, viewer, elise).
 :- \+ check(document, 5, viewer, fernanda).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Intersection and exclusion
 schema(document, writer, self).
@@ -318,8 +299,7 @@ tuple(document, 6, owner, fernanda).
 :- \+ check(document, 4, viewer, daphne).
 :- \+ check(document, 5, viewer, elise).
 :- \+ check(document, 5, viewer, fernanda).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and computed userset
 schema(document, writer, self).
@@ -332,8 +312,7 @@ tuple(document, 3, editor, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- check(document, 2, viewer, beatrix).
 :- \+ check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and tuple-to-userset in minuend
 schema(folder, viewer, self).
@@ -348,8 +327,7 @@ tuple(document, 2, writer, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- check(document, 1, viewer, beatrix).
 :- \+ check(document, 2, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and tuple-to-userset in subtrahend
 schema(folder, viewer, self).
@@ -364,8 +342,7 @@ tuple(document, 2, writer, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- \+ check(document, 1, viewer, beatrix).
 :- check(document, 2, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and union in minuend
 schema(document, writer, self).
@@ -386,8 +363,7 @@ tuple(document, 5, editor, elise).
 :- \+ check(document, 3, viewer, charlie).
 :- check(document, 4, viewer, daphne).
 :- check(document, 5, viewer, elise).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and union in subtrahend
 schema(document, writer, self).
@@ -402,8 +378,7 @@ tuple(document, 3, writer, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- \+ check(document, 2, viewer, beatrix).
 :- check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and intersection in minuend
 schema(document, writer, self).
@@ -423,8 +398,7 @@ tuple(document, 5, owner, elise).
 :- \+ check(document, 3, viewer, charlie).
 :- \+ check(document, 4, viewer, daphne).
 :- \+ check(document, 5, viewer, elise).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and intersection in subtrahend
 schema(document, writer, self).
@@ -447,8 +421,7 @@ tuple(document, 6, owner, fernanda).
 :- check(document, 4, viewer, daphne).
 :- \+ check(document, 5, viewer, elise).
 :- \+ check(document, 6, viewer, fernanda).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and exclusion in minuend
 schema(document, writer, self).
@@ -467,8 +440,7 @@ tuple(document, 5, editor, fernanda).
 :- check(document, 3, viewer, charlie).
 :- \+ check(document, 4, viewer, elise).
 :- \+ check(document, 5, viewer, fernanda).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.
 
 % Exclusion and exclusion in subtrahend
 schema(document, writer, self).
@@ -485,5 +457,4 @@ tuple(document, 3, owner, charlie).
 :- check(document, 1, viewer, abigail).
 :- \+ check(document, 2, viewer, beatrix).
 :- check(document, 3, viewer, charlie).
-:- retractall(schema(_, _, _)).
-:- retractall(tuple(_, _, _, _)).
+:- cleanup.

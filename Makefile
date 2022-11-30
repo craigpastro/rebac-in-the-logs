@@ -1,3 +1,3 @@
 .PHONY: test
 test:
-	swipl -t halt tests.pl
+	@swipl -q --on-warning=status -t halt tests.pl 
