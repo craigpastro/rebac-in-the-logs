@@ -1,6 +1,3 @@
-:- dynamic schema/3.
-:- dynamic tuple/4.
-
 /*
 Write schemas using the following notation, one rewrite per line.
 
@@ -10,12 +7,15 @@ schema(namespace, relation, union(rewrite1, rewrite2))
 schema(namespace, relation, intersection(rewrite1, rewrite2))
 schema(namespace, relation, exclusion(rewrite1, rewrite2))
 
-Write tuples using the following notation
+Write tuples in the following notation:
 
-tuple(namespace, id, relation, user(alice)).
+tuple(namespace, id, relation, alice).
 tuple(namespace, id, relation, object(namespace, id)).
 tuple(namespace, id, relation, userset(namespace, id, relation)).
 */
+
+:- dynamic schema/3.
+:- dynamic tuple/4.
 
 % checkWR = check with rewrite
 checkWR(Namespace, Id, Rel, User, self) :- tuple(Namespace, Id, Rel, User).

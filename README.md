@@ -4,119 +4,85 @@
 
 Inspired by the article [Is Datalog a good language for authorization?](https://neilmadden.blog/2022/02/19/is-datalog-a-good-language-for-authorization/) by Neil Madden, I am playing around trying to write a Zanzibar implementation in [Prolog](https://www.swi-prolog.org/).
 
+```prolog
+schema(folder, viewer, self).
+schema(document, parent, self).
+schema(document, viewer, tupleToUserset(parent, viewer)).
+tuple(document, 1, parent, object(folder, x)).
+tuple(folder, x, viewer, abigail).
+
+?- check(document, 1, viewer, abigail).
+true
+```
+
 ## How does it work?
 
 You will need to have the [SWI-Prolog](https://www.swi-prolog.org/) variant of Prolog installed. I installed it with brew:
 ```console
-$ brew install swi-prolog
+brew install swi-prolog
 ```
 
-Note to self: check out [Logtalk](https://logtalk.org/)?
-
-Once installed, start it up with `swipl`. You should see a prompt like `?-`.
-
-Try loading one of the files. For example, the GitHub model can be loaded as follows:
-```prolog
-?- [github]
-true.
-```
-The `true.` at the end means it loaded the Zanzibar implementation, the GitHub model, and checked some assertions.
-
-Try some of your own assertions such as
-```
-?- userTuple(repo, openfga/openfga, writer, charles).
-```
-
-Get out of Prolog with
-```prolog
-?- halt.
-```
+Once installed, start it up with `swipl`. You should see a prompt like `?-`. You can quit Prolog by entering `halt.` at the prompt.
 
 ## Modelling
 
-TODO: more explaination
-
-```
-model(namespace, relation, rewrite)
-```
-where rewrite can be any of
-- `self`
-- `computedUserset(r)`, where r is a relation
-- `tupleToUserset(r, s)`, where r and s are relations, called the _tupleset_ and _computed userset_ respectively.
-
-Intersection and Exclusion are yet to be done. I started something [here](intersection.pl), but I think it is wrong.
-
-### Self
-
-I am not really sure we need `self`. But we do need a triple, so maybe `model(N, R, self)` is fine. Need to understand the meaning better.
-
-### Union
-
-`define R as S or T`. This union is written as:
-```
-model(N, R, S)
-model(N, R, T)
-```
-
-### Intersection and exclusion
-
-Not yet
-
-## Tuples
-
+A model similar to the one found in the [Zanzibar paper](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/10683a8987dbf0c6d4edcafb9b4f05cc9de5974a.pdf) can be written as
 ```prolog
-userTuple(namespace, objectId, relation, user)
-usersetTuple(namespace, objectId, relation, userNamespace, userObjectId, userRelation)
+schema(document, owner, self).
+schema(document, editor, union(self, computedUserset(owner))).
+schema(document, viewer, union(self, union(editor, tupleToUserset(parent, viewer)))).
 ```
-`userRelation` may be empty, which we represent as `empty`.
+
+The general form of the `schema` functor is
+```prolog
+schema(Namespace, Relation, Rewrite).
+```
+where `Namespace` and `Relation` are names, and `Rewrite` can be either of:
+- `self`.
+- `computedUserset(r)`, where `r` is a name.
+- `tupleToUserset(r, s)`, where `r` and `s` are names, called the _tupleset_ and _computed userset_ of the rewrite respectively.
+- `union(R1, R2)`, where `R1` and `R2` are rewrites themselves.
+- `intersection(R1, R2)`, where `R1` and `R2` are rewrites themselves.
+- `exclusion(R1, R2)`, where `R1` and `R2` are rewrites themselves.
+
+## Adding tuples
+
+Tuples in this system are written as follows
+```prolog
+tuple(Namespace, Id, Relation, User).
+```
+where `Namespace`, `Id`, `Relation` are names, and `User` can be either of:
+- a name representing a concrete user.
+- `object(Namespace, Id)`, where `Namespace` and `Id` are names.
+- `userset(Namespace, Id, Relation)`, where `Namespace`, `Id`, and `Relation` are names.
 
 ## Check
 
-To check if `namespace:objectId#relation@user` is allowed simply:
-
+Once you have written your model and tuples into a file and loaded it into Prolog you can try running some checks. To check if `abigail` is a `viewer` of `document:secret` you would input
 ```prolog
-?- userTuple(namespace, objectId, relation, user)
+?- check(document, secret, viewer, abigail).
 ```
-Similarly for `usersetTuple`s.
+If Prolog returns `true` then `abigail` is a `viewer` of `document:secret`, and `false` if not.
 
-## List objects or relations
+## List
 
-### List objects
-
-What objects in `namespace` does `user` have a `relation` with:
+Suppose you are interested in the `document`s that `abigail` is a `viewer` of. This can be accomplished with
 ```prolog
-?- userTuple(namespace, X, relation, user)
+?- list(document, X, viewer, abigail).
 ```
+Keep pressing `;` to retrieve all the users.
 
-More generally, fill in what you want to constrain. For example, what objects in `namespace` does `user` have a relation with:
+Similarly, suppose you are interested in the users which can view `document:secret`. This is done as
 ```prolog
-?- userTuple(namespace, X, R, user)
-```
-This will return the object X and the relation X it has with it.
-
-Of course, this works with usersetTuples as well.
-
-### List relations
-
-What relations does `user` have on `object` in `namespace`:
-```prolog
-?- userTuple(namespace, object, R, user)
+?- list(document, secret, viewer, X).
 ```
 
-Use `;` to see the next result.
+## Tests
 
-TODO: How do I print all results?
+Run `make test` to run the tests. The tests provide examples of how to write schemas and tuples.
 
+## How to make this useful?
 
-## You can help me!
+My first thought was to somehow wrap it as a web app using something like https://github.com/ichiban/prolog. Another thought was to learn Datalog (or whatever https://github.com/google/mangle is), and see if I could implement this in Datalog.
 
-- Help me learn Prolog
-- Help me learn Datalog
-- Help me understand Zanzibar
-
-## References
-
-- [Is Datalog a good language for authorization?](https://neilmadden.blog/2022/02/19/is-datalog-a-good-language-for-authorization/)
-- [SWI-Prolog](https://www.swi-prolog.org/)
-- [Learn Prolog Now!](http://www.let.rug.nl/bos/lpn//)
-- [Zanzibar paper](https://research.google/pubs/pub48190/)
+In any case, I could use your help! As you can probably tell, I am not an expert of Prolog. Please reach out here or at [twitter](https://twitter.com/craigpastro), and let me know if you can help!
