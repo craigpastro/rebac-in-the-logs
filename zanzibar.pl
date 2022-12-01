@@ -15,9 +15,12 @@ tuple(namespace, id, relation, userset(namespace, id, relation)).
 */
 
 :- dynamic schema/3.
-:- dynamic tuple/4.
+:- multifile schema/3.
 
-% checkWR = check with rewrite
+:- dynamic tuple/4.
+:- multifile tuple/4.
+
+% checkWR is check with rewrite
 checkWR(Namespace, Id, Rel, User, self) :- tuple(Namespace, Id, Rel, User).
 
 checkWR(Namespace, Id, _, User, computedUserset(Rel0)) :- tuple(Namespace, Id, Rel0, User).
@@ -41,9 +44,9 @@ checkWR(Namespace, Id, Rel, User, intersection(S, T)) :-
 
 checkWR(Namespace, Id, Rel, User, exclusion(S, T)) :-
     checkWR(Namespace, Id, Rel, User, S),
-    \+ checkWR(Namespace, Id, Rel, User, T). % add , !. here?
+    \+ checkWR(Namespace, Id, Rel, User, T).
 
-% check add the cut at the end so it justs finds the answer and won't backtrack.
+% check add the cut at the end so it just finds the answer and won't backtrack.
 check(Namespace, Id, Rel, User) :-
     schema(Namespace, Rel, Rewrite),
     checkWR(Namespace, Id, Rel, User, Rewrite), !.
