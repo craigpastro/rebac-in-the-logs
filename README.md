@@ -5,9 +5,9 @@
 Inspired by the article [Is Datalog a good language for authorization?](https://neilmadden.blog/2022/02/19/is-datalog-a-good-language-for-authorization/) by Neil Madden, I am playing around trying to write a Zanzibar implementation in [Prolog](https://www.swi-prolog.org/).
 
 ```prolog
-schema(folder, viewer, self).
-schema(document, parent, self).
-schema(document, viewer, tupleToUserset(parent, viewer)).
+config(folder, viewer, self).
+config(document, parent, self).
+config(document, viewer, tupleToUserset(parent, viewer)).
 tuple(document, 1, parent, object(folder, x)).
 tuple(folder, x, viewer, abigail).
 
@@ -28,14 +28,14 @@ Once installed, start it up with `swipl`. You should see a prompt like `?-`. You
 
 A model similar to the one found in the [Zanzibar paper](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/10683a8987dbf0c6d4edcafb9b4f05cc9de5974a.pdf) can be written as
 ```prolog
-schema(document, owner, self).
-schema(document, editor, union(self, computedUserset(owner))).
-schema(document, viewer, union(self, union(editor, tupleToUserset(parent, viewer)))).
+config(document, owner, self).
+config(document, editor, union(self, computedUserset(owner))).
+config(document, viewer, union(self, union(editor, tupleToUserset(parent, viewer)))).
 ```
 
-The general form of the `schema` functor is
+The general form of the `config` functor is
 ```prolog
-schema(Namespace, Relation, Rewrite).
+config(Namespace, Relation, Rewrite).
 ```
 where `Namespace` and `Relation` are names, and `Rewrite` can be:
 - `self`.
@@ -83,8 +83,12 @@ All other combinations are possible. Simply insert variables into the positions 
 
 Run `make test` to run the tests. The tests provide examples of how to write schemas and tuples.
 
-## How to make this useful?
+## Future Plans
 
-My first thought was to somehow wrap it as a web app using something like https://github.com/ichiban/prolog. Another thought was to learn Datalog (or whatever https://github.com/google/mangle is), and see if I could implement this in Datalog.
+I have wrapped this Prolog program in a web app which can be found https://github.com/craigpastro/nungwi. At some point I'll probably just continue work over there.
 
-**In any case, I could use your help!** As you can probably tell, I am not an expert of Prolog. Please reach out here or at [twitter](https://twitter.com/craigpastro), and let me know if you can help!
+It may also be worth investigating if I could implement this in Datalog (or whatever https://github.com/google/mangle is) too.
+
+## Contributions
+
+You think this is interesting and you would like to help? I would love your help! Please reach out here or at [twitter](https://twitter.com/craigpastro).
