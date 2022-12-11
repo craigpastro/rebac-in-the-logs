@@ -14,11 +14,8 @@ tuple(namespace, id, relation, object(namespace, id)).
 tuple(namespace, id, relation, userset(namespace, id, relation)).
 */
 
-:- dynamic config/3.
-:- multifile config/3.
-
-:- dynamic tuple/4.
-:- multifile tuple/4.
+:- dynamic(config/3).
+:- dynamic(tuple/4).
 
 % checkWR is check with rewrite
 checkWR(Namespace, Id, Rel, User, self) :- tuple(Namespace, Id, Rel, User).
