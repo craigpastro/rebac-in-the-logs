@@ -1,47 +1,33 @@
-/*
-Write schemas using the following notation, one relation config per line.
-
-config(namespace, relation, computedUserset(writer))
-config(namespace, relation, tupleToUserset(tupleset, computedUserset))
-config(namespace, relation, union(rewrite1, rewrite2))
-config(namespace, relation, intersection(rewrite1, rewrite2))
-config(namespace, relation, exclusion(rewrite1, rewrite2))
-
-Write tuples in the following notation:
-
-tuple(namespace, id, relation, alice).
-tuple(namespace, id, relation, object(namespace, id)).
-tuple(namespace, id, relation, userset(namespace, id, relation)).
-*/
-
 :- dynamic(config/3).
 :- dynamic(tuple/4).
 
 % checkWR is check with rewrite
 checkWR(Namespace, Id, Rel, User, self) :- tuple(Namespace, Id, Rel, User).
 
-checkWR(Namespace, Id, _, User, computedUserset(Rel0)) :- tuple(Namespace, Id, Rel0, User).
+checkWR(Namespace, Id, _, User, computedUserset(Rel0)) :-
+    config(Namespace, Rel0, Rewrite),
+    checkWR(Namespace, Id, Rel0, User, Rewrite).
 
-checkWR(Namespace, Id, _, User, tupleToUserset(S, T)) :-
-    tuple(Namespace, Id, S, object(Namespace0, Id0)),
-    config(Namespace0, T, Rewrite),
-    checkWR(Namespace0, Id0, T, User, Rewrite).
+checkWR(Namespace, Id, _, User, tupleToUserset(Tupleset, ComputedUserset)) :-
+    tuple(Namespace, Id, Tupleset, object(Namespace0, Id0)),
+    config(Namespace0, ComputedUserset, Rewrite),
+    checkWR(Namespace0, Id0, ComputedUserset, User, Rewrite).
 
-checkWR(Namespace, Id, _, User, tupleToUserset(S, T)) :-
-    tuple(Namespace, Id, S, userset(Namespace0, Id0, T)),
-    config(Namespace0, T, Rewrite),
-    checkWR(Namespace0, Id0, T, User, Rewrite).
+checkWR(Namespace, Id, _, User, tupleToUserset(Tupleset, ComputedUserset)) :-
+    tuple(Namespace, Id, Tupleset, userset(Namespace0, Id0, ComputedUserset)),
+    config(Namespace0, ComputedUserset, Rewrite),
+    checkWR(Namespace0, Id0, ComputedUserset, User, Rewrite).
 
-checkWR(Namespace, Id, Rel, User, union(S, _)) :- checkWR(Namespace, Id, Rel, User, S).
-checkWR(Namespace, Id, Rel, User, union(_, T)) :- checkWR(Namespace, Id, Rel, User, T).
+checkWR(Namespace, Id, Rel, User, union(L, _)) :- checkWR(Namespace, Id, Rel, User, L).
+checkWR(Namespace, Id, Rel, User, union(_, R)) :- checkWR(Namespace, Id, Rel, User, R).
 
-checkWR(Namespace, Id, Rel, User, intersection(S, T)) :-
-    checkWR(Namespace, Id, Rel, User, S),
-    checkWR(Namespace, Id, Rel, User, T).
+checkWR(Namespace, Id, Rel, User, intersection(L, R)) :-
+    checkWR(Namespace, Id, Rel, User, L),
+    checkWR(Namespace, Id, Rel, User, R).
 
-checkWR(Namespace, Id, Rel, User, exclusion(S, T)) :-
-    checkWR(Namespace, Id, Rel, User, S),
-    \+ checkWR(Namespace, Id, Rel, User, T).
+checkWR(Namespace, Id, Rel, User, exclusion(M, S)) :-
+    checkWR(Namespace, Id, Rel, User, M),
+    \+ checkWR(Namespace, Id, Rel, User, S).
 
 % check add the cut at the end so it just finds the answer and won't backtrack.
 check(Namespace, Id, Rel, User) :-

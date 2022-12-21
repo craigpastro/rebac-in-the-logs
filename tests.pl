@@ -1,6 +1,6 @@
 :- include(zanzibar).
-:- discontiguous check/4.
-:- discontiguous tuple/4.
+:- discontiguous(check/4).
+:- discontiguous(tuple/4).
 
 cleanup :-
     retractall(config(_, _, _)),
@@ -59,6 +59,14 @@ tuple(document, 3, writer, charlie).
 :- \+ check(document, 1, viewer, abigail).
 :- check(document, 2, viewer, beatrix).
 :- \+ check(document, 3, viewer, charlie).
+:- cleanup.
+
+% Computed userset and computed userset
+config(document, owner, self).
+config(document, writer, computedUserset(owner)).
+config(document, viewer, computedUserset(writer)).
+tuple(document, 1, owner, abigail).
+:- check(document, 1, viewer, abigail).
 :- cleanup.
 
 % Computed userset and union
