@@ -87,8 +87,26 @@ Run `make test` to run the tests. The tests provide examples of how to write sch
 
 I have wrapped this Prolog program in a web app which can be found https://github.com/craigpastro/nungwi. At some point I'll probably just continue work over there.
 
-It may also be worth investigating if I could implement this in Datalog (or whatever https://github.com/google/mangle is) too.
+Currently investigating if I can do this using [Logica](https://github.com/EvgSkv/logica) or Datalog (or whatever https://github.com/google/mangle is).
+
+## Modelling
+
+Write schemas using the following notation, one relation config per line:
+```
+config(namespace, relation, computedUserset(writer))
+config(namespace, relation, tupleToUserset(tupleset, computedUserset))
+config(namespace, relation, union(rewrite1, rewrite2))
+config(namespace, relation, intersection(rewrite1, rewrite2))
+config(namespace, relation, exclusion(rewrite1, rewrite2))
+```
+
+Write tuples in the following notation:
+```
+tuple(namespace, id, relation, alice).
+tuple(namespace, id, relation, object(namespace, id)).
+tuple(namespace, id, relation, userset(namespace, id, relation)).
+```
 
 ## Contributions
 
-You think this is interesting and you would like to help? I would love your help! Please reach out here or at [twitter](https://twitter.com/craigpastro).
+I would love to talk to a Datalog or Logica or Mangle expert, or really anyone that would like to help. Please reach out!

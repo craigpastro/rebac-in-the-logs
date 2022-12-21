@@ -1,19 +1,3 @@
-/*
-Write schemas using the following notation, one relation config per line.
-
-config(namespace, relation, computedUserset(writer))
-config(namespace, relation, tupleToUserset(tupleset, computedUserset))
-config(namespace, relation, union(rewrite1, rewrite2))
-config(namespace, relation, intersection(rewrite1, rewrite2))
-config(namespace, relation, exclusion(rewrite1, rewrite2))
-
-Write tuples in the following notation:
-
-tuple(namespace, id, relation, alice).
-tuple(namespace, id, relation, object(namespace, id)).
-tuple(namespace, id, relation, userset(namespace, id, relation)).
-*/
-
 :- dynamic(config/3).
 :- dynamic(tuple/4).
 
