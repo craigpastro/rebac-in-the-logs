@@ -62,6 +62,14 @@ tuple(document, 3, writer, charlie).
 :- \+ check(document, 3, viewer, charlie).
 :- cleanup.
 
+% Computed userset and computed userset
+config(document, owner, self).
+config(document, writer, computedUserset(owner)).
+config(document, viewer, computedUserset(writer)).
+tuple(document, 1, owner, abigail).
+:- check(document, 1, viewer, abigail).
+:- cleanup.
+
 % Computed userset and union
 config(document, writer, self).
 config(document, editor, self).

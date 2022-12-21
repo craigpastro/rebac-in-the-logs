@@ -4,7 +4,9 @@
 % checkWR is check with rewrite
 checkWR(Namespace, Id, Rel, User, self) :- tuple(Namespace, Id, Rel, User).
 
-checkWR(Namespace, Id, _, User, computedUserset(Rel0)) :- tuple(Namespace, Id, Rel0, User).
+checkWR(Namespace, Id, _, User, computedUserset(Rel0)) :-
+    config(Namespace, Rel0, Rewrite),
+    checkWR(Namespace, Id, Rel0, User, Rewrite).
 
 checkWR(Namespace, Id, _, User, tupleToUserset(Tupleset, ComputedUserset)) :-
     tuple(Namespace, Id, Tupleset, object(Namespace0, Id0)),
