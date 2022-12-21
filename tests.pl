@@ -1,6 +1,7 @@
 :- include(zanzibar).
-:- discontiguous check/4.
-:- discontiguous tuple/4.
+:- discontiguous(check/4).
+:- discontiguous(tuple/4).
+:- discontiguous(cleanup/0).
 
 cleanup :-
     retractall(config(_, _, _)),
