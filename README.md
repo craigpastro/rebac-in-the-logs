@@ -7,3 +7,5 @@ Inspired by the article [Is Datalog a good language for authorization?](https://
 - [Souffle](./souffle) WIP
 
 The main difference between the Prolog version and the current Datalog versions is that I can't figure out how to get intersection and exclusion to work in the latter. The current Prolog prolog does not seem to be translatable to Datalog due to "ungrounded variables" in the head of a rule. **If anyone can help with this please let me know!** I would love to talk to someone who knows (or would like to learn) Datalog or Logica or Mangle.
+
+The Prolog version has also been implemented using [Ichiban Prolog](https://github.com/ichiban/prolog) and wrapped in a web app. You can find it at https://github.com/craigpastro/nungwi if you are interested.
