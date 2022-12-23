@@ -1,0 +1,44 @@
+.type Rewrite = Self {}
+              | ComputedUserset { x: symbol }
+              | TupleToUserset { x: symbol, y: symbol }
+              | Union { x: Rewrite, y: Rewrite }
+              | Intersection { x: Rewrite, y: Rewrite }
+              | Exclusion { x: Rewrite, y: Rewrite }
+
+.type User = UserId { id: symbol }
+           | Object { namespace: symbol, id: symbol }
+           | Userset { namespace: symbol, id: symbol, relation: symbol }
+
+.decl config(namespace: symbol, relation: symbol, rewrite: Rewrite)
+.decl tuple(namespace: symbol, id: symbol, relation: symbol, user: User)
+
+.decl list(namespace:symbol, id: symbol, relation: symbol, user: User)
+.output list
+
+list(namespace, id, rel, user) :-
+    config(namespace, rel, $Self()),
+    tuple(namespace, id, rel, user).
+
+list(namespace, id, rel, user) :-
+    config(namespace, rel, $ComputedUserset(rel0)),
+    list(namespace, id, rel0, user).
+
+list(namespace, id, rel, user) :-
+    config(namespace, rel, $TupleToUserset(tupleset, computedUserset)),
+    tuple(namespace, id, tupleset, $Object(namespace0, id0)),
+    list(namespace0, id0, computedUserset, user).
+
+list(namespace, id, rel, user) :-
+    config(namespace, rel, $TupleToUserset(tupleset, computedUserset)),
+    config(namespace, tupleset, $Self()),
+    tuple(namespace, id, tupleset, $Userset(namespace0, id0, computedUserset)),
+    list(namespace0, id0, computedUserset, user).
+
+config("folder", "viewer", $Self()).
+config("document", "parent", $Self()).
+config("document", "viewer", $Self()).
+config("document", "viewer", $TupleToUserset("parent", "viewer")).
+
+tuple("folder", "x", "viewer", $UserId("aardvark")).
+tuple("document", "1", "parent", $Object("folder", "x")).
+tuple("document", "1", "viewer", $UserId("badger")).
