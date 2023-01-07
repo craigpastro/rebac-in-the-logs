@@ -11,3 +11,8 @@ Run the example:
 ```
 logica zanzibar.l run DocumentViewers
 ```
+
+To generate SQL:
+```
+logica zanzibar.l print DocumentViewers
+```
