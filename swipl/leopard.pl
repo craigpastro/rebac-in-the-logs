@@ -27,8 +27,17 @@ check(Namespace, ObjectId, Relation, UserId) :-
 % For example, if you had `config(document, viewer, intersection(writer, editor))` then 
 % issue two checks against writer and editor and return the result.
 
+
 config(folder, viewer, self).
 config(document, parent, self).
+config(document, writer, self).
+config(document, viewer, computedUserset(writer)).
 config(document, viewer, tupleToUserset(parent, viewer)).
+
 tuple(document, 1, parent, object(folder, x)).
 tuple(folder, x, viewer, abigail).
+
+tuple(document, 2, writer, beatrix).
+
+:- check(document, 2, viewer, beatrix).
+:- check(document, 1, viewer, abigail).
