@@ -1,4 +1,4 @@
-:- include(zanzibar).
+:- include(zanzibar_v2).
 :- discontiguous(check/4).
 :- discontiguous(tuple/4).
 
