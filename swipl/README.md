@@ -1,4 +1,4 @@
-# Zanzibar in SWI-Prolog
+# ReBAC in SWI-Prolog
 
 ## Example usage
 
