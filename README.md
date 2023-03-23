@@ -1,6 +1,6 @@
-# Zanzibar in the Logs
+# ReBAC in the Logs
 
-Inspired by the article [Is Datalog a good language for authorization?](https://neilmadden.blog/2022/02/19/is-datalog-a-good-language-for-authorization/) by Neil Madden, I am playing around trying to write a Zanzibar implementation with some of the "...logs".
+Inspired by the article [Is Datalog a good language for authorization?](https://neilmadden.blog/2022/02/19/is-datalog-a-good-language-for-authorization/) by Neil Madden, I am playing around trying to write a Zanzibar-inspired ReBAC implementation with some of the "...logs".
 
 - [SWI-Prolog](./swipl)
 - [Logica](./logica) WIP
